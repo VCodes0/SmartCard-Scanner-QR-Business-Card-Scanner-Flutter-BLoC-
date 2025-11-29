@@ -23,19 +23,23 @@ class ContactCard extends StatelessWidget {
                 value: contact.name!,
                 context: context,
               ),
-            if (contact.phone != null && contact.phone!.isNotEmpty)
-              _buildInfoRow(
-                icon: Icons.phone_outlined,
-                label: 'Phone',
-                value: contact.phone!,
-                context: context,
+            if (contact.phones != null && contact.phones!.isNotEmpty)
+              ...contact.phones!.map(
+                (phone) => _buildInfoRow(
+                  icon: Icons.phone_outlined,
+                  label: 'Phone',
+                  value: phone,
+                  context: context,
+                ),
               ),
-            if (contact.email != null && contact.email!.isNotEmpty)
-              _buildInfoRow(
-                icon: Icons.email_outlined,
-                label: 'Email',
-                value: contact.email!,
-                context: context,
+            if (contact.emails != null && contact.emails!.isNotEmpty)
+              ...contact.emails!.map(
+                (email) => _buildInfoRow(
+                  icon: Icons.email_outlined,
+                  label: 'Email',
+                  value: email,
+                  context: context,
+                ),
               ),
             if (contact.company != null && contact.company!.isNotEmpty)
               _buildInfoRow(
@@ -51,12 +55,14 @@ class ContactCard extends StatelessWidget {
                 value: contact.jobTitle!,
                 context: context,
               ),
-            if (contact.address != null && contact.address!.isNotEmpty)
-              _buildInfoRow(
-                icon: Icons.location_on_outlined,
-                label: 'Address',
-                value: contact.address!,
-                context: context,
+            if (contact.addresses != null && contact.addresses!.isNotEmpty)
+              ...contact.addresses!.map(
+                (address) => _buildInfoRow(
+                  icon: Icons.location_on_outlined,
+                  label: 'Address',
+                  value: address,
+                  context: context,
+                ),
               ),
             if (contact.website != null && contact.website!.isNotEmpty)
               _buildInfoRow(

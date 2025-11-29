@@ -14,7 +14,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
     
     <application
-        android:label="save_card"
+        android:label="Scan Contact"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

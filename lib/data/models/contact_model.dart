@@ -4,11 +4,11 @@ import '../../domain/entities/contact_entity.dart';
 class ContactModel extends ContactEntity {
   const ContactModel({
     super.name,
-    super.phone,
-    super.email,
+    super.phones,
+    super.emails,
     super.company,
     super.jobTitle,
-    super.address,
+    super.addresses,
     super.website,
     super.notes,
   });
@@ -17,11 +17,11 @@ class ContactModel extends ContactEntity {
   factory ContactModel.fromEntity(ContactEntity entity) {
     return ContactModel(
       name: entity.name,
-      phone: entity.phone,
-      email: entity.email,
+      phones: entity.phones,
+      emails: entity.emails,
       company: entity.company,
       jobTitle: entity.jobTitle,
-      address: entity.address,
+      addresses: entity.addresses,
       website: entity.website,
       notes: entity.notes,
     );
@@ -31,11 +31,17 @@ class ContactModel extends ContactEntity {
   factory ContactModel.fromJson(Map<String, dynamic> json) {
     return ContactModel(
       name: json['name'] as String?,
-      phone: json['phone'] as String?,
-      email: json['email'] as String?,
+      phones: (json['phones'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      emails: (json['emails'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       company: json['company'] as String?,
       jobTitle: json['jobTitle'] as String?,
-      address: json['address'] as String?,
+      addresses: (json['addresses'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       website: json['website'] as String?,
       notes: json['notes'] as String?,
     );
@@ -45,11 +51,11 @@ class ContactModel extends ContactEntity {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'phone': phone,
-      'email': email,
+      'phones': phones,
+      'emails': emails,
       'company': company,
       'jobTitle': jobTitle,
-      'address': address,
+      'addresses': addresses,
       'website': website,
       'notes': notes,
     };

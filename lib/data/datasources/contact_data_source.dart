@@ -28,14 +28,18 @@ class ContactDataSourceImpl implements ContactDataSource {
         ..name.first = _extractFirstName(contact.name ?? '')
         ..name.last = _extractLastName(contact.name ?? '');
 
-      // Add phone if available
-      if (contact.phone != null && contact.phone!.isNotEmpty) {
-        newContact.phones = [Phone(contact.phone!, label: PhoneLabel.mobile)];
+      // Add phones if available
+      if (contact.phones != null && contact.phones!.isNotEmpty) {
+        newContact.phones = contact.phones!
+            .map((phone) => Phone(phone, label: PhoneLabel.mobile))
+            .toList();
       }
 
-      // Add email if available
-      if (contact.email != null && contact.email!.isNotEmpty) {
-        newContact.emails = [Email(contact.email!, label: EmailLabel.work)];
+      // Add emails if available
+      if (contact.emails != null && contact.emails!.isNotEmpty) {
+        newContact.emails = contact.emails!
+            .map((email) => Email(email, label: EmailLabel.work))
+            .toList();
       }
 
       // Add company/organization if available
@@ -48,11 +52,11 @@ class ContactDataSourceImpl implements ContactDataSource {
         ];
       }
 
-      // Add address if available
-      if (contact.address != null && contact.address!.isNotEmpty) {
-        newContact.addresses = [
-          Address(contact.address!, label: AddressLabel.work),
-        ];
+      // Add addresses if available
+      if (contact.addresses != null && contact.addresses!.isNotEmpty) {
+        newContact.addresses = contact.addresses!
+            .map((address) => Address(address, label: AddressLabel.work))
+            .toList();
       }
 
       // Add website if available

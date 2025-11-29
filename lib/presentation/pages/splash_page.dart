@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../../core/services/onboarding_service.dart';
+import '../../core/utils/responsive_util.dart';
 import 'onboarding_page.dart';
 import 'home_page.dart';
 
@@ -92,8 +93,14 @@ class _SplashPageState extends State<SplashPage>
                     children: [
                       // App Icon
                       Container(
-                        width: 120,
-                        height: 120,
+                        width: ResponsiveUtil.getResponsiveIconSize(
+                          context,
+                          baseSize: 120,
+                        ),
+                        height: ResponsiveUtil.getResponsiveIconSize(
+                          context,
+                          baseSize: 120,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
@@ -107,39 +114,69 @@ class _SplashPageState extends State<SplashPage>
                         ),
                         child: Icon(
                           Icons.contact_phone_rounded,
-                          size: 60,
+                          size: ResponsiveUtil.getResponsiveIconSize(
+                            context,
+                            baseSize: 60,
+                          ),
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(
+                        height: ResponsiveUtil.getResponsiveSpacing(
+                          context,
+                          baseSpacing: 24,
+                        ),
+                      ),
 
                       // App Name
-                      const Text(
+                      Text(
                         'Contact Saver',
                         style: TextStyle(
-                          fontSize: 32,
+                          fontSize: ResponsiveUtil.getResponsiveFontSize(
+                            context,
+                            baseFontSize: 32,
+                          ),
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 1.2,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: ResponsiveUtil.getResponsiveSpacing(
+                          context,
+                          baseSpacing: 8,
+                        ),
+                      ),
 
                       // Tagline
                       Text(
                         'Scan. Extract. Save.',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: ResponsiveUtil.getResponsiveFontSize(
+                            context,
+                            baseFontSize: 16,
+                          ),
                           color: Colors.white.withValues(alpha: 0.9),
                           letterSpacing: 0.5,
                         ),
                       ),
-                      const SizedBox(height: 48),
+                      SizedBox(
+                        height: ResponsiveUtil.getResponsiveSpacing(
+                          context,
+                          baseSpacing: 48,
+                        ),
+                      ),
 
                       // Loading Indicator
                       SizedBox(
-                        width: 40,
-                        height: 40,
+                        width: ResponsiveUtil.getResponsiveIconSize(
+                          context,
+                          baseSize: 40,
+                        ),
+                        height: ResponsiveUtil.getResponsiveIconSize(
+                          context,
+                          baseSize: 40,
+                        ),
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
                             Colors.white.withValues(alpha: 0.7),

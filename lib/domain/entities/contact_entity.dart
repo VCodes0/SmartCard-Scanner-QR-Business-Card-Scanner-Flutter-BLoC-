@@ -3,21 +3,21 @@ import 'package:equatable/equatable.dart';
 /// Contact entity representing a contact with all relevant information
 class ContactEntity extends Equatable {
   final String? name;
-  final String? phone;
-  final String? email;
+  final List<String>? phones;
+  final List<String>? emails;
   final String? company;
   final String? jobTitle;
-  final String? address;
+  final List<String>? addresses;
   final String? website;
   final String? notes;
 
   const ContactEntity({
     this.name,
-    this.phone,
-    this.email,
+    this.phones,
+    this.emails,
     this.company,
     this.jobTitle,
-    this.address,
+    this.addresses,
     this.website,
     this.notes,
   });
@@ -25,27 +25,27 @@ class ContactEntity extends Equatable {
   /// Check if the contact has at least some basic information
   bool get isValid =>
       (name != null && name!.isNotEmpty) ||
-      (phone != null && phone!.isNotEmpty) ||
-      (email != null && email!.isNotEmpty);
+      (phones != null && phones!.isNotEmpty) ||
+      (emails != null && emails!.isNotEmpty);
 
   /// Create a copy with updated fields
   ContactEntity copyWith({
     String? name,
-    String? phone,
-    String? email,
+    List<String>? phones,
+    List<String>? emails,
     String? company,
     String? jobTitle,
-    String? address,
+    List<String>? addresses,
     String? website,
     String? notes,
   }) {
     return ContactEntity(
       name: name ?? this.name,
-      phone: phone ?? this.phone,
-      email: email ?? this.email,
+      phones: phones ?? this.phones,
+      emails: emails ?? this.emails,
       company: company ?? this.company,
       jobTitle: jobTitle ?? this.jobTitle,
-      address: address ?? this.address,
+      addresses: addresses ?? this.addresses,
       website: website ?? this.website,
       notes: notes ?? this.notes,
     );
@@ -54,11 +54,11 @@ class ContactEntity extends Equatable {
   @override
   List<Object?> get props => [
     name,
-    phone,
-    email,
+    phones,
+    emails,
     company,
     jobTitle,
-    address,
+    addresses,
     website,
     notes,
   ];

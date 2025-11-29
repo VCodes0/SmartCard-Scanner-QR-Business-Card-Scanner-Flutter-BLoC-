@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import '../../core/utils/responsive_util.dart';
 import '../bloc/scanner/scanner_bloc.dart';
 import '../bloc/scanner/scanner_event.dart';
 
@@ -118,34 +119,54 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
         ),
 
         // Overlay with scanning area
-        Container(
-          decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.5)),
-          child: Center(
-            child: Container(
-              width: 250,
-              height: 250,
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final scanAreaSize = ResponsiveUtil.getResponsiveIconSize(
+              context,
+              baseSize: 250,
+            );
+            return Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 2),
-                borderRadius: BorderRadius.circular(12),
+                color: Colors.black.withValues(alpha: 0.5),
               ),
-            ),
-          ),
+              child: Center(
+                child: Container(
+                  width: scanAreaSize,
+                  height: scanAreaSize,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveUtil.getResponsiveBorderRadius(context),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
 
         // Instructions
         Positioned(
-          bottom: 100,
+          bottom: ResponsiveUtil.getResponsiveSpacing(
+            context,
+            baseSpacing: 100,
+          ),
           left: 0,
           right: 0,
-          child: Container(
-            padding: const EdgeInsets.all(16),
+          child: Padding(
+            padding: ResponsiveUtil.getHorizontalPadding(context),
             child: Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: ResponsiveUtil.getResponsivePadding(context),
                 child: Text(
                   'Position the QR code within the frame',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontSize: ResponsiveUtil.getResponsiveFontSize(
+                      context,
+                      baseFontSize: 16,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -158,35 +179,69 @@ class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
   Widget _buildBusinessCardInfo() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: ResponsiveUtil.getResponsivePadding(context),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.credit_card_rounded,
-              size: 80,
+              size: ResponsiveUtil.getResponsiveIconSize(context, baseSize: 80),
               color: Theme.of(context).colorScheme.primary,
             ),
-            const SizedBox(height: 24),
+            SizedBox(
+              height: ResponsiveUtil.getResponsiveSpacing(
+                context,
+                baseSpacing: 24,
+              ),
+            ),
             Text(
               'Business Card Scanner',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: ResponsiveUtil.getResponsiveFontSize(
+                  context,
+                  baseFontSize: 24,
+                ),
+              ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(
+              height: ResponsiveUtil.getResponsiveSpacing(
+                context,
+                baseSpacing: 16,
+              ),
+            ),
             Text(
               'The camera will open to capture the business card. '
               'Make sure the card is well-lit and all text is clearly visible.',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontSize: ResponsiveUtil.getResponsiveFontSize(
+                  context,
+                  baseFontSize: 16,
+                ),
+              ),
             ),
-            const SizedBox(height: 32),
+            SizedBox(
+              height: ResponsiveUtil.getResponsiveSpacing(
+                context,
+                baseSpacing: 32,
+              ),
+            ),
             const CircularProgressIndicator(),
-            const SizedBox(height: 16),
+            SizedBox(
+              height: ResponsiveUtil.getResponsiveSpacing(
+                context,
+                baseSpacing: 16,
+              ),
+            ),
             Text(
               'Opening camera...',
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontSize: ResponsiveUtil.getResponsiveFontSize(
+                  context,
+                  baseFontSize: 14,
+                ),
+              ),
             ),
           ],
         ),

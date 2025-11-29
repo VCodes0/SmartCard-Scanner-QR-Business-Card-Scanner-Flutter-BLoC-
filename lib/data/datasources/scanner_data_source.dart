@@ -63,11 +63,11 @@ class ScannerDataSourceImpl implements ScannerDataSource {
   Future<ContactEntity> extractContactFromText(String text) async {
     try {
       String? name;
-      String? phone;
-      String? email;
+      List<String> phones = [];
+      List<String> emails = [];
       String? company;
       String? jobTitle;
-      String? address;
+      List<String> addresses = [];
       String? website;
 
       // Split text into lines
@@ -82,6 +82,7 @@ class ScannerDataSourceImpl implements ScannerDataSource {
       );
 
       // Phone regex pattern (supports various formats)
+      // Changed to capture ALL phone numbers, not just 10+ digits
       final phonePattern = RegExp(
         r'(\+?\d{1,4}[\s-]?)?(\(?\d{2,4}\)?[\s-]?)?\d{3,4}[\s-]?\d{3,4}',
       );
@@ -115,25 +116,43 @@ class ScannerDataSourceImpl implements ScannerDataSource {
         'Junior',
         'Lead',
         'Head of',
+        'Founder',
+        'Managing Director',
       ];
+
+      // Keywords that indicate an address line
+      final addressKeywords = RegExp(
+        r'(Street|St|Avenue|Ave|Road|Rd|Lane|Ln|Drive|Dr|Boulevard|Blvd|Way|Floor|Gf|Plot|A-|A1-|Building|Complex|Village|City|State|District|Dist|Pin|Pincode|India|Maharashtra|Thane|Mumbai)',
+        caseSensitive: false,
+      );
+
+      List<String> potentialAddressLines = [];
 
       for (var i = 0; i < lines.length; i++) {
         final line = lines[i].trim();
 
-        // Extract email
-        if (email == null && emailPattern.hasMatch(line)) {
-          email = emailPattern.firstMatch(line)?.group(0);
+        // Extract all emails
+        if (emailPattern.hasMatch(line)) {
+          final matches = emailPattern.allMatches(line);
+          for (final match in matches) {
+            final emailStr = match.group(0);
+            if (emailStr != null && !emails.contains(emailStr)) {
+              emails.add(emailStr);
+            }
+          }
           continue;
         }
 
-        // Extract phone
-        if (phone == null && phonePattern.hasMatch(line)) {
-          final match = phonePattern.firstMatch(line)?.group(0);
-          if (match != null &&
-              match.replaceAll(RegExp(r'[^0-9]'), '').length >= 10) {
-            phone = match;
-            continue;
+        // Extract ALL phone numbers (no minimum digit requirement)
+        if (phonePattern.hasMatch(line)) {
+          final matches = phonePattern.allMatches(line);
+          for (final match in matches) {
+            final phoneStr = match.group(0);
+            if (phoneStr != null && !phones.contains(phoneStr)) {
+              phones.add(phoneStr);
+            }
           }
+          // Don't continue - the line might have other info
         }
 
         // Extract website
@@ -152,11 +171,19 @@ class ScannerDataSourceImpl implements ScannerDataSource {
           }
         }
 
+        // Detect potential address lines
+        if (addressKeywords.hasMatch(line) ||
+            (line.contains(RegExp(r'\d')) && line.length > 10)) {
+          potentialAddressLines.add(line);
+          continue;
+        }
+
         // First non-special line is likely the name
         if (name == null &&
             !emailPattern.hasMatch(line) &&
-            !phonePattern.hasMatch(line) &&
-            !websitePattern.hasMatch(line)) {
+            !websitePattern.hasMatch(line) &&
+            line.length < 50) {
+          // Names are typically short
           name = line;
           continue;
         }
@@ -165,11 +192,44 @@ class ScannerDataSourceImpl implements ScannerDataSource {
         if (name != null &&
             company == null &&
             !emailPattern.hasMatch(line) &&
-            !phonePattern.hasMatch(line) &&
             !websitePattern.hasMatch(line) &&
-            jobTitle != line) {
+            jobTitle != line &&
+            line.length < 100) {
           company = line;
         }
+      }
+
+      // Group address lines into complete addresses
+      // Check for keywords like "FACTORY ADD:", "OFFICE ADD:", etc.
+      String currentAddress = '';
+      for (var i = 0; i < potentialAddressLines.length; i++) {
+        final line = potentialAddressLines[i];
+
+        // Check if this line starts a new address section
+        if (line.toUpperCase().contains('ADD:') ||
+            line.toUpperCase().contains('ADDRESS') ||
+            (i > 0 &&
+                currentAddress.isNotEmpty &&
+                (line.contains(RegExp(r'^[A-Z]')) && line.contains('-')))) {
+          // Save previous address if exists
+          if (currentAddress.isNotEmpty) {
+            addresses.add(currentAddress.trim());
+            currentAddress = '';
+          }
+          currentAddress = line;
+        } else {
+          // Add to current address
+          if (currentAddress.isEmpty) {
+            currentAddress = line;
+          } else {
+            currentAddress += ', ' + line;
+          }
+        }
+      }
+
+      // Add the last address
+      if (currentAddress.isNotEmpty) {
+        addresses.add(currentAddress.trim());
       }
 
       // If we still don't have a name, use the first line
@@ -177,13 +237,13 @@ class ScannerDataSourceImpl implements ScannerDataSource {
 
       return ContactModel(
         name: name,
-        phone: phone,
-        email: email,
+        phones: phones.isNotEmpty ? phones : null,
+        emails: emails.isNotEmpty ? emails : null,
         company: company,
         jobTitle: jobTitle,
-        address: address,
+        addresses: addresses.isNotEmpty ? addresses : null,
         website: website,
-        notes: 'Scanned from business card',
+        notes: 'Write Any Notes For This Contact If You Want 😀',
       );
     } catch (e) {
       throw Exception('Failed to extract contact information: ${e.toString()}');
