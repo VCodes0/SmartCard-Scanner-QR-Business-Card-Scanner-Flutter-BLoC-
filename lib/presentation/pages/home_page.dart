@@ -5,7 +5,7 @@ import '../bloc/scanner/scanner_bloc.dart';
 import '../bloc/scanner/scanner_event.dart';
 import '../bloc/scanner/scanner_state.dart';
 import '../widgets/scan_button_widget.dart';
-import 'contact_preview_page.dart';
+import '../../core/services/contact_intent_service.dart';
 import 'scanner_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -22,16 +22,21 @@ class HomePage extends StatelessWidget {
         elevation: 0,
       ),
       body: BlocListener<ScannerBloc, ScannerState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is ScannerSuccess) {
-            // Navigate to contact preview
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ContactPreviewPage(contact: state.contact),
-              ),
-            );
+            // Launch native Android contact intent with pre-filled data
+            try {
+              await ContactIntentService.launchAddContact(state.contact);
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Error opening contacts: ${e.toString()}'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            }
           } else if (state is ScannerError) {
             // Show error message
             ScaffoldMessenger.of(context).showSnackBar(

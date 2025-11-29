@@ -35,28 +35,9 @@ class ContactDataSourceImpl implements ContactDataSource {
             .toList();
       }
 
-      // Add emails if available
-      if (contact.emails != null && contact.emails!.isNotEmpty) {
-        newContact.emails = contact.emails!
-            .map((email) => Email(email, label: EmailLabel.work))
-            .toList();
-      }
-
-      // Add company/organization if available
-      if (contact.company != null && contact.company!.isNotEmpty) {
-        newContact.organizations = [
-          Organization(
-            company: contact.company!,
-            title: contact.jobTitle ?? '',
-          ),
-        ];
-      }
-
-      // Add addresses if available
-      if (contact.addresses != null && contact.addresses!.isNotEmpty) {
-        newContact.addresses = contact.addresses!
-            .map((address) => Address(address, label: AddressLabel.work))
-            .toList();
+      // Add email if available (single email)
+      if (contact.email != null && contact.email!.isNotEmpty) {
+        newContact.emails = [Email(contact.email!, label: EmailLabel.work)];
       }
 
       // Add website if available
@@ -64,11 +45,6 @@ class ContactDataSourceImpl implements ContactDataSource {
         newContact.websites = [
           Website(contact.website!, label: WebsiteLabel.work),
         ];
-      }
-
-      // Add notes if available
-      if (contact.notes != null && contact.notes!.isNotEmpty) {
-        newContact.notes = [Note(contact.notes!)];
       }
 
       // Insert the contact

@@ -1,65 +1,35 @@
 import 'package:equatable/equatable.dart';
 
-/// Contact entity representing a contact with all relevant information
+/// Contact entity with 4 essential fields from business card
 class ContactEntity extends Equatable {
   final String? name;
-  final List<String>? phones;
-  final List<String>? emails;
-  final String? company;
-  final String? jobTitle;
-  final List<String>? addresses;
+  final List<String>? phones; // Max 2 phone numbers
+  final String? email; // Single email only
   final String? website;
-  final String? notes;
 
-  const ContactEntity({
-    this.name,
-    this.phones,
-    this.emails,
-    this.company,
-    this.jobTitle,
-    this.addresses,
-    this.website,
-    this.notes,
-  });
+  const ContactEntity({this.name, this.phones, this.email, this.website});
 
   /// Check if the contact has at least some basic information
   bool get isValid =>
       (name != null && name!.isNotEmpty) ||
       (phones != null && phones!.isNotEmpty) ||
-      (emails != null && emails!.isNotEmpty);
+      (email != null && email!.isNotEmpty);
 
   /// Create a copy with updated fields
   ContactEntity copyWith({
     String? name,
     List<String>? phones,
-    List<String>? emails,
-    String? company,
-    String? jobTitle,
-    List<String>? addresses,
+    String? email,
     String? website,
-    String? notes,
   }) {
     return ContactEntity(
       name: name ?? this.name,
       phones: phones ?? this.phones,
-      emails: emails ?? this.emails,
-      company: company ?? this.company,
-      jobTitle: jobTitle ?? this.jobTitle,
-      addresses: addresses ?? this.addresses,
+      email: email ?? this.email,
       website: website ?? this.website,
-      notes: notes ?? this.notes,
     );
   }
 
   @override
-  List<Object?> get props => [
-    name,
-    phones,
-    emails,
-    company,
-    jobTitle,
-    addresses,
-    website,
-    notes,
-  ];
+  List<Object?> get props => [name, phones, email, website];
 }

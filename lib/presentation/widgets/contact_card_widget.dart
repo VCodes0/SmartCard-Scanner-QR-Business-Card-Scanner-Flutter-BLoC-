@@ -32,37 +32,12 @@ class ContactCard extends StatelessWidget {
                   context: context,
                 ),
               ),
-            if (contact.emails != null && contact.emails!.isNotEmpty)
-              ...contact.emails!.map(
-                (email) => _buildInfoRow(
-                  icon: Icons.email_outlined,
-                  label: 'Email',
-                  value: email,
-                  context: context,
-                ),
-              ),
-            if (contact.company != null && contact.company!.isNotEmpty)
+            if (contact.email != null && contact.email!.isNotEmpty)
               _buildInfoRow(
-                icon: Icons.business_outlined,
-                label: 'Company',
-                value: contact.company!,
+                icon: Icons.email_outlined,
+                label: 'Email',
+                value: contact.email!,
                 context: context,
-              ),
-            if (contact.jobTitle != null && contact.jobTitle!.isNotEmpty)
-              _buildInfoRow(
-                icon: Icons.work_outline,
-                label: 'Job Title',
-                value: contact.jobTitle!,
-                context: context,
-              ),
-            if (contact.addresses != null && contact.addresses!.isNotEmpty)
-              ...contact.addresses!.map(
-                (address) => _buildInfoRow(
-                  icon: Icons.location_on_outlined,
-                  label: 'Address',
-                  value: address,
-                  context: context,
-                ),
               ),
             if (contact.website != null && contact.website!.isNotEmpty)
               _buildInfoRow(
