@@ -1,142 +1,104 @@
-# Contact Saver - Visiting Card Scanner
+# Contact Saver
 
-A Flutter application that scans visiting cards using the device camera, extracts contact information using Google ML Kit Text Recognition, and automatically opens the device contacts app with all extracted information prefilled.
+A powerful Flutter mobile application that simplifies contact management by scanning QR codes and business cards to automatically extract and save contact information. Built with **Clean Architecture** and **BLoC** pattern for robustness and scalability.
 
-## Features
+## 🚀 Features
 
-- 📸 **Camera Integration**: Capture visiting card images using device camera or select from gallery
-- 🔍 **OCR Text Recognition**: Extract text from visiting card images using Google ML Kit
-- 📇 **Smart Data Extraction**: Automatically extracts:
-  - Full name (non-numeric text)
-  - Mobile numbers (+91 and 10-digit formats)
-  - Telephone/landline numbers
-  - Email addresses
-  - Company names
-  - Job titles
-  - Website URLs
-  - Address and additional notes
-- 📱 **Contact Integration**: Automatically opens device contacts app with all extracted information prefilled
-- 🎨 **Modern UI**: Clean, modern interface with smooth animations
-- 🏗️ **Clean Architecture**: Well-structured codebase using GetX for state management
-- ✅ **Null Safety**: Full null-safety support
-- 🔒 **Permission Handling**: Proper permission requests for camera and photo library access
+-   **Smart Scanning**:
+    -   **QR Codes**: Instantly scan vCard QR codes to parse contact details.
+    -   **Business Cards**: Use AI-powered OCR (Google ML Kit) to scan physical business cards and intelligently extract names, emails, phone numbers, and more.
+-   **Automatic Extraction**: Advanced regex patterns identify and categorize contact fields (Name, Job Title, Phone, Email, Website, Address).
+-   **One-Tap Save**: Seamlessly save extracted details directly to your device's native Contacts app.
+-   **Onboarding Experience**: Beautiful, animated onboarding flow for first-time users.
+-   **Lifecycle Management**: Efficient resource handling (camera pauses when app is backgrounded).
+-   **Privacy Focused**: All processing happens on-device; no data is sent to external servers.
 
-## Architecture
+## 🛠️ Tech Stack
 
-The app follows clean architecture principles with clear separation of concerns:
+-   **Framework**: Flutter (Dart)
+-   **State Management**: [flutter_bloc](https://pub.dev/packages/flutter_bloc)
+-   **Architecture**: Clean Architecture (Presentation, Domain, Data, Core)
+-   **Dependency Injection**: [get_it](https://pub.dev/packages/get_it)
+-   **OCR & Vision**: [google_mlkit_text_recognition](https://pub.dev/packages/google_mlkit_text_recognition)
+-   **QR Scanning**: [mobile_scanner](https://pub.dev/packages/mobile_scanner)
+-   **Contacts**: [flutter_contacts](https://pub.dev/packages/flutter_contacts)
+-   **Local Storage**: [shared_preferences](https://pub.dev/packages/shared_preferences)
+
+## 🏗️ Architecture
+
+The project follows **Clean Architecture** principles to ensure separation of concerns and testability:
 
 ```
 lib/
-├── models/          # Data models (ContactData)
-├── services/        # Business logic services
-│   ├── camera_service.dart
-│   ├── ocr_service.dart
-│   └── contact_launcher_service.dart
-├── controllers/     # GetX controllers for state management
-│   └── home_controller.dart
-├── screens/         # UI screens
-│   └── home_screen.dart
-└── main.dart        # App entry point
+├── core/                   # Core utilities (Error handling, DI, Services)
+├── domain/                 # Business logic (Entities, UseCases, Repository Interfaces)
+├── data/                   # Data layer (Models, Data Sources, Repository Implementations)
+└── presentation/           # UI layer (Pages, Widgets, BLoCs)
 ```
 
-## Dependencies
+### Key Components
+-   **BLoC**: Manages state for Scanning (`ScannerBloc`) and Contact operations (`ContactBloc`).
+-   **UseCases**: Encapsulate specific business rules (e.g., `ScanQRCodeUseCase`, `SaveContactUseCase`).
+-   **Repositories**: Abstract data sources, allowing easy switching between implementations.
 
-- **get**: ^4.6.6 - State management and dependency injection
-- **image_picker**: ^1.0.7 - Camera and gallery access
-- **google_mlkit_text_recognition**: ^0.11.0 - OCR text recognition
-- **url_launcher**: ^6.2.2 - Launching external apps (contacts)
-- **permission_handler**: ^11.3.0 - Permission management
-- **path_provider**: ^2.1.1 - File path utilities
+## 📱 Setup & Installation
 
-## Permissions
+### Prerequisites
+-   Flutter SDK (3.0+)
+-   Android Studio / Xcode
+-   Physical device (recommended for Camera testing)
 
-### Android
-- `CAMERA` - For capturing visiting card images
-- `READ_MEDIA_IMAGES` - For accessing images from gallery (Android 13+)
-- `READ_EXTERNAL_STORAGE` - For accessing images from gallery (Android 12 and below)
-- `WRITE_EXTERNAL_STORAGE` - For saving images (Android 9 and below)
+### Installation
 
-### iOS
-- `NSCameraUsageDescription` - Camera access for scanning cards
-- `NSPhotoLibraryUsageDescription` - Photo library access for selecting images
-- `NSPhotoLibraryAddUsageDescription` - Permission to save images
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/yourusername/contact_saver.git
+    cd contact_saver
+    ```
 
-## Setup Instructions
+2.  **Install dependencies**:
+    ```bash
+    flutter pub get
+    ```
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd save_card
-   ```
+3.  **Run the app**:
+    ```bash
+    flutter run
+    ```
 
-2. **Install dependencies**
-   ```bash
-   flutter pub get
-   ```
+### Permissions
 
-3. **Run the app**
-   ```bash
-   flutter run
-   ```
+The app requires the following permissions, which are already configured:
 
-## Usage
+**Android** (`AndroidManifest.xml`):
+-   `CAMERA`: For scanning.
+-   `READ_CONTACTS` / `WRITE_CONTACTS`: To save extracted details.
+-   `INTERNET`: Required by ML Kit to download OCR models (once).
 
-1. Launch the app
-2. Tap the "Scan Visiting Card" button
-3. Allow camera permission when prompted
-4. Capture or select an image of a visiting card
-5. Wait for OCR processing to extract contact information
-6. The device contacts app will automatically open with all extracted information prefilled
-7. Review and save the contact
+**iOS** (`Info.plist`):
+-   `NSCameraUsageDescription`
+-   `NSContactsUsageDescription`
+-   `NSMicrophoneUsageDescription` (Safety fallback)
 
-## How It Works
+## 📖 Usage Guide
 
-1. **Image Capture**: User taps the scan button, and the app requests camera/gallery access
-2. **OCR Processing**: The captured image is processed using Google ML Kit Text Recognition
-3. **Data Extraction**: The OCR service parses the recognized text and extracts:
-   - Names using pattern matching (non-numeric, letter-based text)
-   - Phone numbers using regex patterns (Indian +91 format and 10-digit numbers)
-   - Email addresses using email regex patterns
-   - Company names by detecting company-related keywords
-   - Job titles by detecting job-related keywords
-   - Websites using URL patterns
-4. **Contact Launch**: The extracted data is formatted and the device contacts app is opened with prefilled information
+1.  **Onboarding**: On first launch, swipe through the introduction to understand the app's capabilities.
+2.  **Home Screen**: Choose your scanning mode:
+    -   **Scan QR Code**: Point at a vCard QR code.
+    -   **Scan Business Card**: Capture a clear photo of a visiting card.
+3.  **Preview & Edit**: Review the extracted information. You can manually edit any field if the OCR missed something.
+4.  **Save**: Tap "Save Contact" to add it to your phonebook.
 
-## Platform Support
+## 🔄 App Lifecycle
 
-- ✅ Android (API 21+)
-- ✅ iOS (12.0+)
+The app implements `WidgetsBindingObserver` to manage resources efficiently:
+-   **Resumed**: Camera preview restarts automatically.
+-   **Paused/Inactive**: Camera resources are released to save battery and memory.
 
-## Error Handling
-
-The app includes comprehensive error handling for:
-- Permission denials
-- Camera/gallery access failures
-- OCR processing errors
-- Contact app launch failures
-
-All errors are displayed to the user via snackbars and status messages.
-
-## Performance Optimizations
-
-- Efficient image processing with quality optimization
-- Proper resource disposal (OCR recognizer cleanup)
-- Reactive state management with GetX for smooth UI updates
-- Optimized regex patterns for fast text extraction
-
-## Future Enhancements
-
-- Save contacts directly without opening external app
-- Batch scanning multiple cards
-- Contact history and management
-- Export contacts to various formats
-- Cloud sync capabilities
-- Improved OCR accuracy with custom models
-
-## License
-
-This project is licensed under the MIT License.
-
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

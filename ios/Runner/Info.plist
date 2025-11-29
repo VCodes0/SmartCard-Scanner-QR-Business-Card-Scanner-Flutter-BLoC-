@@ -53,5 +53,7 @@
 	<string>We need access to save scanned visiting card images to your photo library.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>We need access to your contacts to save scanned contact information.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to your microphone for video recording features.</string>
 </dict>
 </plist>
